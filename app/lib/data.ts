@@ -9,6 +9,9 @@ import {
   Revenue,
 } from './definitions';
 import { formatCurrency } from './utils';
+import { PrismaClient } from '@prisma/client';
+
+export const prisma = new PrismaClient();
 
 export async function fetchRevenue() {
   // Add noStore() here prevent the response from being cached.
@@ -21,11 +24,14 @@ export async function fetchRevenue() {
     // console.log('Fetching revenue data...');
     // await new Promise((resolve) => setTimeout(resolve, 3000));
 
-    const data = await sql<Revenue>`SELECT * FROM revenue`;
+    //const data = await sql<Revenue>`SELECT * FROM revenue`;
+    
+    const data = prisma.revenue.findMany();
+    console.log('Fetch Revenue 1', (await data).length);
 
     // console.log('Data fetch completed after 3 seconds.');
 
-    return data.rows;
+    return data;
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch revenue data.');
@@ -34,19 +40,41 @@ export async function fetchRevenue() {
 
 export async function fetchLatestInvoices() {
   try {
-    const data = await sql<LatestInvoiceRaw>`
-      SELECT invoices.amount, customers.name, customers.image_url, customers.email, invoices.id
-      FROM invoices
-      JOIN customers ON invoices.customer_id = customers.id
-      ORDER BY invoices.date DESC
-      LIMIT 5`;
+    const invoices = await prisma.invoices.findMany({
+      include: {
+        customer: true
+      },
+    });
+    
+    invoices.sort((a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : 0);
+    const trimedInvoices = invoices.slice(invoices.length - 5, invoices.length);
+    const reducedInvoices = trimedInvoices.map(invoice => {
+      return {
+        id: invoice.id.toString(),
+        name: invoice.customer.name, 
+        image_url: invoice.customer.image_url,
+        email: invoice.customer.email,
+        amount: formatCurrency(invoice.amount),
+        }
+    });
 
-    const latestInvoices = data.rows.map((invoice) => ({
-      ...invoice,
-      amount: formatCurrency(invoice.amount),
-    }));
-    return latestInvoices;
-  } catch (error) {
+    return reducedInvoices;
+
+    // const data = await sql<LatestInvoiceRaw>`
+    //   SELECT invoices.amount, customers.name, customers.image_url, customers.email, invoices.id
+    //   FROM invoices
+    //   JOIN customers ON invoices.customer_id = customers.id
+    //   ORDER BY invoices.date DESC
+    //   LIMIT 5`;
+
+    // const latestInvoices = data.rows.map((invoice) => ({
+    //   ...invoice,
+    //   amount: formatCurrency(invoice.amount),
+    // }));
+    // return latestInvoices;
+  } 
+  catch (error) 
+  {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch the latest invoices.');
   }
@@ -171,17 +199,27 @@ export async function fetchInvoiceById(id: string) {
 
 export async function fetchCustomers() {
   try {
-    const data = await sql<CustomerField>`
+    /*const data = await sql<CustomerField>`
       SELECT
         id,
         name
       FROM customers
       ORDER BY name ASC
-    `;
+    `;*/
 
-    const customers = data.rows;
+    const customers = prisma.customers.findMany({
+      orderBy: [
+        {
+          name: 'asc',
+        },
+      ],
+    });
+
+    
     return customers;
-  } catch (err) {
+  } 
+  catch (err) 
+  {
     console.error('Database Error:', err);
     throw new Error('Failed to fetch all customers.');
   }
