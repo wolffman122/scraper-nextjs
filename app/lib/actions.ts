@@ -76,3 +76,13 @@ export async function updateBrand(id: string, formData: FormData) {
     revalidatePath('/dashboard/brands');
     redirect('/dashboard/brands');
 }
+
+export async function deleteBrand(id: string) {
+    await prisma.brands.delete({
+        where: {
+            id: id
+        }
+    });
+
+    revalidatePath('/dashboard/brands');
+}
