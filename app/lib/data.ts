@@ -1,4 +1,3 @@
-import { sql } from '@vercel/postgres';
 import {
   CustomerField,
   CustomersTableType,
@@ -244,6 +243,10 @@ export async function fetchFilteredCustomers(query: string) {
 		GROUP BY customers.id, customers.name, customers.email, customers.image_url
 		ORDER BY customers.name ASC
 	  `;
+
+    const data = await prisma.customers.findMany({
+      
+    })
 
     const customers = data.rows.map((customer) => ({
       ...customer,
