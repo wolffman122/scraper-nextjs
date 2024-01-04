@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,32 +8,32 @@ datasource db {
 }
 
 model users {
-  id        String     @id @default(uuid())
-  name      String
-  email     String
-  password  String
+  id       String @id @default(uuid())
+  name     String
+  email    String
+  password String
 }
 
 model invoices {
-  id            String     @id @default(uuid())
-  amount        Int
-  status        String
-  date          DateTime    @default(now())
-  customer      customers   @relation(fields: [customerId], references: [id])
-  customerId    String
+  id         String    @id @default(uuid())
+  amount     Int
+  status     String
+  date       DateTime  @default(now())
+  customerId String
+  customer   customers @relation(fields: [customerId], references: [id])
+
+  @@index([customerId], map: "invoices_customerId_fkey")
 }
 
 model customers {
-  id            String     @id @default(uuid())
-  name          String
-  email         String
-  image_url     String  
-  invoices      invoices[]
+  id        String     @id @default(uuid())
+  name      String
+  email     String
+  image_url String
+  invoices  invoices[]
 }
 
 model revenue {
-  month         String  @unique
-  revenue       Int
+  month   String @unique
+  revenue Int
 }
-
-
