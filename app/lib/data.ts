@@ -34,7 +34,6 @@ export async function fetchRevenue() {
     //const data = await sql<Revenue>`SELECT * FROM revenue`;
 
     const data = prisma.revenue.findMany();
-    console.log('Fetch Revenue 1', (await data).length);
 
     // console.log('Data fetch completed after 3 seconds.');
 
@@ -159,7 +158,6 @@ export async function fetchFilteredInvoices(
       }
     });
 
-    console.log(data);
     const invoices = data.map((invoice) => {
       if (invoice.customer.name.includes(query)
         || invoice.customer.email.includes(query)
@@ -233,14 +231,6 @@ export async function fetchInvoiceById(id: string) {
 
 export async function fetchCustomers() {
   try {
-    /*const data = await sql<CustomerField>`
-      SELECT
-        id,
-        name
-      FROM customers
-      ORDER BY name ASC
-    `;*/
-
     const customers = prisma.customers.findMany({
       orderBy: [
         {
@@ -260,15 +250,12 @@ export async function fetchCustomers() {
 
 export async function fetchFilteredCustomers(query: string) {
   try {
-    console.log('fetchFilteredCustomers')
-    console.log('Query', query);
     const data = await prisma.customers.findMany({
       include: {
         invoices: {}
       }
     });
 
-    console.log(data);
     const customers = data.map((customer) => {
       let total_pending = 0;
       let total_paid = 0;
@@ -285,12 +272,46 @@ export async function fetchFilteredCustomers(query: string) {
       };
     });
 
-    console.log(customers);
     return customers;
   } catch (err) {
     console.error('Database Error:', err);
     throw new Error('Failed to fetch customer table.');
   }
+}
+
+export async function fetchBrands() {
+  try {
+    const brands = prisma.brands.findMany({
+      orderBy: [
+        {
+          name: 'asc',
+        }
+      ]
+    })
+
+    return brands;
+  }
+  catch (err) {
+    console.error('Datbase Error:', err);
+    throw new Error('Failed to fetch all brands');
+  }
+}
+
+export async function fetchBrandById(id: string) {
+  const data = await prisma.brands.findFirst({
+    where: {
+      id: id
+    }
+  });
+
+  const brand = {
+    id: data?.id as string,
+    name: data?.name as string,
+    website: data?.website as string,
+  }
+
+  console.log('fetchBrandById', brand);
+  return brand;
 }
 
 export async function getUser(email: string) {
