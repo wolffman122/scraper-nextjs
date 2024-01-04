@@ -1,5 +1,6 @@
 import { fetchFilteredModels } from "@/app/lib/data";
 import Link from "next/link";
+import { DeleteModel, UpdateModel } from "./buttont";
 
 export default async function ModelsTable({
   query,
@@ -34,8 +35,8 @@ export default async function ModelsTable({
                       <p>{model.scraperCode}</p>
                     </div>
                     <div className="flex justify-end gap-2">
-                      {/*<UpdateModel id={model.id} />*/}
-                      {/* {<DeleteModel id={model.id} />} */}
+                      <UpdateModel id={model.id} />
+                      <DeleteModel id={model.id} />
                     </div>
                   </div>
                 </div>
@@ -89,8 +90,8 @@ export default async function ModelsTable({
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
-                      {/* {<UpdateModel id={model.id} />} */}
-                      {/* {<DeleteModel id={model.id} />} */}
+                      <UpdateModel id={model.id} />
+                      <DeleteModel id={model.id} />
                     </div>
                   </td>
                 </tr>

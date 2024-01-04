@@ -65,19 +65,6 @@ export async function fetchLatestInvoices() {
     });
 
     return reducedInvoices;
-
-    // const data = await sql<LatestInvoiceRaw>`
-    //   SELECT invoices.amount, customers.name, customers.image_url, customers.email, invoices.id
-    //   FROM invoices
-    //   JOIN customers ON invoices.customer_id = customers.id
-    //   ORDER BY invoices.date DESC
-    //   LIMIT 5`;
-
-    // const latestInvoices = data.rows.map((invoice) => ({
-    //   ...invoice,
-    //   amount: formatCurrency(invoice.amount),
-    // }));
-    // return latestInvoices;
   }
   catch (error) {
     console.error('Database Error:', error);
@@ -128,27 +115,6 @@ export async function fetchFilteredInvoices(
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
   try {
-    // const invoices = await sql<InvoicesTable>`
-    //   SELECT
-    //     invoices.id,
-    //     invoices.amount,
-    //     invoices.date,
-    //     invoices.status,
-    //     customers.name,
-    //     customers.email,
-    //     customers.image_url
-    //   FROM invoices
-    //   JOIN customers ON invoices.customer_id = customers.id
-    //   WHERE
-    //     customers.name ILIKE ${`%${query}%`} OR
-    //     customers.email ILIKE ${`%${query}%`} OR
-    //     invoices.amount::text ILIKE ${`%${query}%`} OR
-    //     invoices.date::text ILIKE ${`%${query}%`} OR
-    //     invoices.status ILIKE ${`%${query}%`}
-    //   ORDER BY invoices.date DESC
-    //   LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
-    // `;
-
     const data = await prisma.invoices.findMany({
       include: {
         customer: {}
@@ -267,6 +233,40 @@ export async function fetchInvoiceById(id: string) {
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch invoice.');
+  }
+}
+
+export async function fetchModelById(id: string) {
+  try {
+    // const data = await sql<InvoiceForm>`
+    //   SELECT
+    //     invoices.id,
+    //     invoices.customer_id,
+    //     invoices.amount,
+    //     invoices.status
+    //   FROM invoices
+    //   WHERE invoices.id = ${id};
+    // `;
+
+    const data = await prisma.models.findFirst({
+      select: {
+        id: true,
+        modelNumber: true,
+        size: true,
+        link: true,
+        scraperCode: true,
+        brandsId: true,
+      },
+      where: {
+        id: id
+      }
+    });
+
+    return data;
+  }
+  catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch model.');
   }
 }
 

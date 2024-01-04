@@ -97,3 +97,12 @@ export type BrandForm = {
   name: string;
   website: string;
 }
+
+export type ModelForm = {
+  id: string,
+  modelNumber: string,
+  size: string,
+  link: string,
+  scraperCode: string,
+  brandId: string
+}

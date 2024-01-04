@@ -109,3 +109,39 @@ export async function deleteBrand(id: string) {
 
   revalidatePath('/dashboard/brands');
 }
+
+export async function updateModel(id: string, formData: FormData) {
+  const rawFormData = {
+    modelNumber: formData.get('modelNumber') as string,
+    size: formData.get('size') as string,
+    link: formData.get('link') as string,
+    scraperCode: formData.get('scraperCode') as string,
+    brandId: formData.get('brandId') as string
+  }
+
+  await prisma.models.update({
+    where: {
+      id: id
+    },
+    data: {
+      modelNumber: rawFormData.modelNumber,
+      size: rawFormData.size,
+      link: rawFormData.link,
+      scraperCode: rawFormData.scraperCode,
+      brandsId: rawFormData.brandId
+    }
+  });
+
+  revalidatePath('/dashboard/models');
+  redirect('/dashboard/models');
+}
+
+export async function deleteModel(id: string) {
+  await prisma.models.delete({
+    where: {
+      id: id
+    }
+  });
+
+  revalidatePath('/dashboard/brands');
+}
