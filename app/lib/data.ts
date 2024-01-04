@@ -150,26 +150,39 @@ export async function fetchFilteredInvoices(
     //   LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
     // `;
 
-    const invoices: any[] = [];
-    const invoices1 = prisma.invoices.findMany({
+    const data = await prisma.invoices.findMany({
       include: {
         customer: {}
       },
-      where: {
-        amount: {
-          contains: 
-        }
+      orderBy: {
+        date: "desc"
       }
-
-    }
     });
 
-  console.log(invoices1);
-  return invoices;
-} catch (error) {
-  console.error('Database Error:', error);
-  throw new Error('Failed to fetch invoices.');
-}
+    console.log(data);
+    const invoices = data.map((invoice) => {
+      if (invoice.customer.name.includes(query)
+        || invoice.customer.email.includes(query)
+        || invoice.amount == +query
+        || invoice.date.toString().includes(query)
+        || invoice.status.includes(query)) {
+        return {
+          id: invoice.id,
+          amount: invoice.amount,
+          date: invoice.date,
+          status: invoice.status,
+          name: invoice.customer.name,
+          email: invoice.customer.email,
+          image_url: invoice.customer.image_url,
+        }
+      }
+    });
+
+    return invoices;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch invoices.');
+  }
 }
 
 export async function fetchInvoicesPages(query: string) {
@@ -259,7 +272,7 @@ export async function fetchFilteredCustomers(query: string) {
     const customers = data.map((customer) => {
       let total_pending = 0;
       let total_paid = 0;
-      customer.invoices.forEach(i => ((i.status == 'paid') ? total_paid : total_paid) + i.amount);
+      customer.invoices.forEach(i => (i.status == 'paid') ? (total_paid += i.amount) : (total_pending += i.amount))
 
       return {
         id: customer.id,
