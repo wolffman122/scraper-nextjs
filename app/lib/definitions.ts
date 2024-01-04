@@ -87,6 +87,11 @@ export type InvoiceForm = {
   status: 'pending' | 'paid';
 };
 
+export type BrandField = {
+  id: string;
+  name: string;
+}
+
 export type BrandForm = {
   id: string
   name: string;

@@ -183,6 +183,47 @@ export async function fetchFilteredInvoices(
   }
 }
 
+export async function fetchFilteredModels(
+  query: string,
+  currentPage: number,
+) {
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+  try {
+    const data = await prisma.models.findMany({
+      include: {
+        brands: {}
+      },
+      orderBy: {
+        modelNumber: "desc"
+      }
+    });
+
+    const models = data.map((model) => {
+      if (model.brands?.name.includes(query)
+        || model.brands?.website.includes(query)
+        || model.link.includes(query)
+        || model.modelNumber.includes(query)
+        || model.scraperCode.includes(query)
+        || model.size.includes(query)) {
+        return {
+          id: model.id,
+          brandName: model.brands?.name,
+          link: model.link,
+          modelNumber: model.modelNumber,
+          scraperCode: model.scraperCode,
+          size: model.size
+        }
+      }
+    });
+
+    return models;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch models.');
+  }
+}
+
 export async function fetchInvoicesPages(query: string) {
   try {
     const count = await sql`SELECT COUNT(*)
