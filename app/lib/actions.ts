@@ -1,9 +1,9 @@
 'use server';
 
-import { raw } from "@prisma/client/runtime/library";
 import { prisma } from "./data";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { amazonScraper } from "./scrapers/amazon";
 
 export async function createInvoice(formData: FormData) {
   const rawFormData = {
@@ -58,19 +58,21 @@ export async function createBrand(formData: FormData) {
 export async function createModel(formData: FormData) {
   const rawFormData = {
     brandId: formData.get('brandId') as string,
-    modelNumber: formData.get('modelNumber') as string,
-    size: formData.get('size') as string,
     link: formData.get('link') as string,
-    scraperCode: formData.get('scraperCode') as string
   };
 
+  const scrapedData = await amazonScraper(rawFormData.link);
+
+  console.log('Create Model', scrapedData.modelNumber, scrapedData.scraperCode, scrapedData.size);
+    
   await prisma.models.create({
     data: {
       brandsId: rawFormData.brandId,
-      modelNumber: rawFormData.modelNumber,
-      size: rawFormData.size,
+      modelNumber: scrapedData.modelNumber,
+      size: scrapedData.size,
+      cacheSize: scrapedData.cacheSize,
       link: rawFormData.link,
-      scraperCode: rawFormData.scraperCode
+      scraperCode: scrapedData.scraperCode
     }
   });
 

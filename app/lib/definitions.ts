@@ -112,3 +112,10 @@ export type ModelForm = {
   scraperCode: string,
   brandId: string
 }
+
+export interface WDAmazonData {
+  modelNumber: string;
+  size: string;
+  cacheSize: string;
+  scraperCode: string;
+}

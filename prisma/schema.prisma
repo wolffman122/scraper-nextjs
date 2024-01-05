@@ -53,6 +53,7 @@ model models {
   updatedAt   DateTime @updatedAt
   modelNumber String
   size        String
+  cacheSize   String
   link        String
   scraperCode String
   brands      brands?  @relation(fields: [brandsId], references: [id])
