@@ -9,7 +9,7 @@ import {
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
-import { CpuChipIcon, InboxIcon } from '@heroicons/react/20/solid';
+import { CpuChipIcon, InboxIcon, TableCellsIcon } from '@heroicons/react/20/solid';
 
 // Map of links to display in the side navigation.
 // Depending on the size of the application, this would be stored in a database.
@@ -22,7 +22,8 @@ const links = [
   },
   { name: 'Customers', href: '/dashboard/customers', icon: UserGroupIcon },
   { name: 'Brands', href: '/dashboard/brands', icon: CpuChipIcon },
-  { name: 'Models', href: '/dashboard/models', icon: InboxIcon }
+  { name: 'Models', href: '/dashboard/models', icon: InboxIcon },
+  { name: 'PriceHistory', href: '/dashboard/priceHistory', icon: TableCellsIcon }
 ];
 
 export default function NavLinks() {

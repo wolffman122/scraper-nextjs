@@ -98,6 +98,12 @@ export type BrandForm = {
   website: string;
 }
 
+export type ModelField = {
+  id: string;
+  modelNumber: string;
+  size: string
+}
+
 export type ModelForm = {
   id: string,
   modelNumber: string,

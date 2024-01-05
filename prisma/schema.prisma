@@ -57,4 +57,13 @@ model models {
   scraperCode String
   brands      brands?  @relation(fields: [brandsId], references: [id])
   brandsId    String?
+  priceHistory priceHistory[]
+}
+
+model priceHistory {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now())
+  price       Float
+  model       models  @relation(fields: [modelId], references: [id])
+  modelId     String
 }

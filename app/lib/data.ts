@@ -1,12 +1,7 @@
 import { sql } from '@vercel/postgres';
 import {
-  CustomerField,
-  CustomersTableType,
   InvoiceForm,
-  InvoicesTable,
-  LatestInvoiceRaw,
   User,
-  Revenue,
 } from './definitions';
 import { formatCurrency } from './utils';
 import { PrismaClient } from '@prisma/client';
@@ -236,6 +231,25 @@ export async function fetchInvoiceById(id: string) {
   }
 }
 
+export async function fetchModels() {
+  try {
+    const brands = prisma.models.findMany({
+      orderBy: [
+        {
+          modelNumber: 'asc',
+          size: 'asc'
+        }
+      ]
+    })
+
+    return brands;
+  }
+  catch (err) {
+    console.error('Datbase Error:', err);
+    throw new Error('Failed to fetch all models');
+  }
+}
+
 export async function fetchModelById(id: string) {
   try {
     // const data = await sql<InvoiceForm>`
@@ -268,6 +282,16 @@ export async function fetchModelById(id: string) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch model.');
   }
+}
+
+export async function fetchModelsByBrandId(brandId: string) {
+  const models = await prisma.models.findMany({
+    where: {
+      brandsId : brandId
+    }
+  })
+
+  return models;
 }
 
 export async function fetchCustomers() {
