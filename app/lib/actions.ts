@@ -1,9 +1,11 @@
 'use server';
 
+import { PrismaClient } from "@prisma/client";
 import { raw } from "@prisma/client/runtime/library";
-import { prisma } from "./data";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+
+const prisma = new PrismaClient();
 
 export async function createInvoice(formData: FormData) {
   const rawFormData = {

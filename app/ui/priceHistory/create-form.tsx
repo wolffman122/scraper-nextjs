@@ -1,18 +1,17 @@
+"use client";
 import { fetchModelsByBrandId } from "@/app/lib/data";
 import { BrandField, ModelField } from "@/app/lib/definitions";
+import { changeBrandOptionHandler } from "@/app/lib/eventHandlers";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 
 import React, { useState } from "react";
 
 
-export default async function Form({ brands }: { brands: BrandField[] }) {
-  const [ selected, setSelected] = useState('');
+export default function Form({ brands }: { brands: BrandField[] }) {
+  const [brand, setBrand] = useState('');
+  const [model, setModel] = useState('-- Select Model --');
+  const [models, setModels] = useState<ModelField[]>([]);
 
-  const changeSelectOptionHandler = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelected(event.target.value);
-  }
-
-  const models = await fetchModelsByBrandId(selected);
 
   return (
     <form>
@@ -27,8 +26,8 @@ export default async function Form({ brands }: { brands: BrandField[] }) {
               id="brand"
               name="brandId"
               className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-              defaultValue=""
-              onChange={changeSelectOptionHandler}>
+              value={brand}
+              onChange={(e) => changeBrandOptionHandler(e.target.value, setBrand, setModels)}>
               <option value="" disabled>
                 Select a brand
               </option>
@@ -52,19 +51,20 @@ export default async function Form({ brands }: { brands: BrandField[] }) {
               id="model"
               name="modelId"
               className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-              defaultValue="">
+              defaultValue={model}>
               <option value="" disabled>
                 Select a model
               </option>
               {models.map((model) => (
                 <option key={model.id} value={model.id}>
-                  {model.modelNumber}
+                  {model.modelNumber} {model.size}TB
                 </option>
               ))}
             </select>
             <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
           </div>
         </div>
+
       </div>
     </form>
   )

@@ -1,3 +1,4 @@
+"use server";
 import { sql } from '@vercel/postgres';
 import {
   InvoiceForm,
@@ -6,7 +7,7 @@ import {
 import { formatCurrency } from './utils';
 import { PrismaClient } from '@prisma/client';
 
-export const prisma = new PrismaClient({
+const prisma = new PrismaClient({
   log: [
     {
       emit: "event",
@@ -287,7 +288,10 @@ export async function fetchModelById(id: string) {
 export async function fetchModelsByBrandId(brandId: string) {
   const models = await prisma.models.findMany({
     where: {
-      brandsId : brandId
+      brandsId: brandId
+    },
+    orderBy: {
+      size: 'asc'
     }
   })
 
