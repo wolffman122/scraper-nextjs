@@ -1,6 +1,7 @@
 import { fetchFilteredModels } from "@/app/lib/data";
 import Link from "next/link";
 import { DeleteModel, UpdateModel } from "./buttont";
+import clsx from "clsx";
 
 export default async function ModelsTable({
   query,
@@ -33,6 +34,7 @@ export default async function ModelsTable({
                         {model.size}
                       </p>
                       <p>{model.scraperCode}</p>
+                      <p>{model.cacheSize}</p>
                     </div>
                     <div className="flex justify-end gap-2">
                       <UpdateModel id={model.id} />
@@ -57,6 +59,9 @@ export default async function ModelsTable({
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Size
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Cache Size
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Scraper Code
@@ -86,6 +91,9 @@ export default async function ModelsTable({
                     {model?.size}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
+                    {model?.cacheSize}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
                     {model?.scraperCode}
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
@@ -98,6 +106,15 @@ export default async function ModelsTable({
               ))}
             </tbody>
           </table>
+          <div className="mt-6 flex justify-end gap-4">
+            <Link
+              href="/dashboard/models/create"
+              className={clsx(
+                'flex h-10 items-center rounded-lg bg-blue-500 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 active:bg-blue-600 aria-disabled:cursor-not-allowed aria-disabled:opacity-50'
+              )}>
+              Create Model
+            </Link>
+          </div>
         </div>
       </div>
     </div>
