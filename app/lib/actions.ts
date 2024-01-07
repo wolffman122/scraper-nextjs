@@ -1,9 +1,11 @@
 'use server';
 
-import { prisma } from "./data";
+import { PrismaClient } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { amazonScraper } from "./scrapers/amazon";
+
+const prisma = new PrismaClient();
 
 export async function createInvoice(formData: FormData) {
   const rawFormData = {
