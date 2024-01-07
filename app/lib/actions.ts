@@ -53,6 +53,9 @@ export async function createBrand(formData: FormData) {
       website: rawFormData.website
     },
   });
+
+  revalidatePath('/dashboard/brands');
+  redirect('/dashboard/brands');
 }
 
 export async function createModel(formData: FormData) {
@@ -63,7 +66,7 @@ export async function createModel(formData: FormData) {
 
   const scrapedData = await amazonScraper(rawFormData.link);
 
-  console.log('Create Model', scrapedData.modelNumber, scrapedData.scraperCode, scrapedData.size);
+  console.log('Create Model', scrapedData.modelNumber, scrapedData.scraperCode, scrapedData.size, scrapedData.cacheSize    );
     
   await prisma.models.create({
     data: {

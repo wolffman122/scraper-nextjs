@@ -173,7 +173,8 @@ export async function fetchFilteredModels(
           link: model.link,
           modelNumber: model.modelNumber,
           scraperCode: model.scraperCode,
-          size: model.size
+          size: model.size,
+          cacheSize: model.cacheSize
         }
       }
     });
