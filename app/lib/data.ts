@@ -155,9 +155,9 @@ export async function fetchFilteredModels(
     const data = await prisma.models.findMany({
       include: {
         brands: {}
-      },
+      },      
       orderBy: {
-        modelNumber: "desc"
+        size: "asc"
       }
     });
 

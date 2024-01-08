@@ -42,7 +42,7 @@ model brands {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  name      String
+  name      String   @unique
   website   String
   models    models[]
 }
@@ -52,8 +52,8 @@ model models {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   modelNumber String
-  size        String
-  cacheSize   String
+  size        Int
+  cacheSize   Int
   link        String
   scraperCode String
   brands      brands?  @relation(fields: [brandsId], references: [id])
