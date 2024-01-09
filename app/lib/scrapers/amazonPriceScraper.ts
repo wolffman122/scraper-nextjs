@@ -1,37 +1,43 @@
 import { PrismaClient } from "@prisma/client";
+import { JSDOM } from 'jsdom';
 import * as cheerio from 'cheerio';
 import axios from "axios";
 import { resolve } from "path";
 
 export async function priceScraper() {
-
-    const $ = cheerio.load(
-        `<div id=test>
-            Hello
-            <div>
-                <h1>header</h1>
-                <h1 class="special">header 2</h1>
-                <p>Paragraph</p>
-            </div>
-        </div>`,
-      );
-      
-    const contents = $('#test').find('div > h1').contents();
-    const narrow = $('.special', contents).html();
-    //const narrow = $('.special').html();
-    console.log(narrow);
-
     const prisma = new PrismaClient();
 
     const models = await prisma.models.findMany({});
+    
+    models.forEach(async (model) => {
+      
+      const res = await axios.get(model.link);
+      const html = await res.data;
 
-    const response = await axios.get(models[0].link);
-    const ch = cheerio.load(response.data);
+      const dom = new JSDOM(html);
 
-    //console.log(ch('#corePriceDisplay_desktop_feature_div').contents());
-    ch('#corePriceDisplay_desktop_feature_div')
-    .find('div > span > span > span').each((index, element)=>{
-        //console.log('index', index);
-        //console.log(ch(element).html());
+      const document = dom.window.document;
+
+      if(document.querySelector('#inline-twister-expander-content-size_name') !== null)
+        console.log('Multi price selection');
+
+      const price = document.querySelector('.a-price-whole').textContent + document.querySelector('.a-price-fraction').textContent;
+
+      console.log(model.modelNumber, model.size, price);
+
+
+      //console.log('Loop')
+      //const response = await axios.get(models[0].link);
+      // console.log(model.modelNumber);
+      // const $ = cheerio.load(response.data);
+      // const coreDisplay = $('#corePriceDisplay_desktop_feature_div');
+      // if(coreDisplay.length == 2)
+      // {
+      //   console.log('Going for price');
+      //   const findResults = $('#corePriceDisplay_desktop_feature_div').find('div > div > span > span ')
+      //   let test = $('.a-price-whole', findResults[1]).text();
+      //   test += $('.a-price-fraction', findResults[1]).text();
+      //   console.log(test);
+      // }
     });
 }
