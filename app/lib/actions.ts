@@ -74,8 +74,8 @@ export async function createModel(formData: FormData) {
     data: {
       brandsId: rawFormData.brandId,
       modelNumber: scrapedData.modelNumber,
-      size: scrapedData.size,
-      cacheSize: scrapedData.cacheSize,
+      size: +scrapedData.size,
+      cacheSize: +scrapedData.cacheSize,
       link: rawFormData.link,
       scraperCode: scrapedData.scraperCode
     }

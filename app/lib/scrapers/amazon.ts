@@ -5,8 +5,8 @@ export async function amazonScraper(link: string) : WDAmazonData {
 
     let scraperCode = '';
     let modelNumber = '';
-    let size = '';
-    let cacheSize = '';
+    let size = 0;
+    let cacheSize = 0;
     let productTitle = "";
 
     const scraperCodePattern = new RegExp(/(?:[d][p][\/]([a-zA-z0-9]{1,}))/g);
@@ -32,13 +32,13 @@ export async function amazonScraper(link: string) : WDAmazonData {
     const hardDrivePattern =/(\d{1,})(?:[TB]{2})/g;
     let matchSize;
     while((matchSize = hardDrivePattern.exec(productTitle)) != null)
-        size = matchSize[0];
+        size = +matchSize[1];
 
     // Cache Size
     const cahceSizePattern = /(\d{2,})(?: MB)/g;
     let matchCahceSize;
     while((matchCahceSize = cahceSizePattern.exec(productTitle)) != null)
-        cacheSize = matchCahceSize[0];
+        cacheSize = +matchCahceSize[1];
 
     return {
         modelNumber: modelNumber,
