@@ -155,7 +155,7 @@ export async function fetchFilteredModels(
     const data = await prisma.models.findMany({
       include: {
         brands: {}
-      },      
+      },
       orderBy: {
         size: "asc"
       }
@@ -391,5 +391,58 @@ export async function getUser(email: string) {
   } catch (error) {
     console.error('Failed to fetch user:', error);
     throw new Error('Failed to fetch user.');
+  }
+}
+
+export async function getModelsIncludingPriceHistory() {
+  try {
+    const models = await prisma.models.findMany({
+      include: {
+        priceHistory: true
+      }
+    });
+
+    const priceHistory = models.map((model) => {
+      let avgPrice = 0.0;
+      model.priceHistory.forEach((ph) => {
+        avgPrice += ph.price;
+      })
+
+      avgPrice /= model.priceHistory.length;
+      if (Number.isNaN(avgPrice))
+        avgPrice = 0;
+
+      return {
+        modelId: model.id,
+        modelNumber: model.modelNumber,
+        size: model.size,
+        avgPrice: avgPrice,
+        priceHistoryLength: model.priceHistory ? model.priceHistory.length : 0
+      };
+    });
+
+    return priceHistory;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to get models including price history.');
+  }
+}
+
+export async function getPriceHistory(id: string) {
+  try {
+    console.log('getPriceHistory', id);
+    const priceHistory = await prisma.priceHistory.findMany({
+      where: {
+        modelId: id
+      }
+    });
+
+    console.log('Price History', priceHistory.length)
+
+    return priceHistory;
+  }
+  catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to get price history.');
   }
 }

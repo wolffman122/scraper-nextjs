@@ -1,8 +1,10 @@
-import { priceScraper } from "@/app/lib/scrapers/amazonPriceScraper";
+import { Table } from "@/app/ui/priceHistory/table";
 
-export default async function Page() {
-    priceScraper();
+export default function Page() {
+  //priceScraper();
 
-    return <h1>Price History</h1>
-    
+  return (
+    <Table />
+  )
+
 }
