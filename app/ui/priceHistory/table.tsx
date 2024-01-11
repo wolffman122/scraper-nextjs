@@ -1,10 +1,10 @@
 'use client';
 
-import { Model } from "@/app/lib/definitions";
-import { Table } from "@radix-ui/themes";
+import { ModelsWithPH } from "@/app/lib/definitions";
+import { Table, TableCell } from "@radix-ui/themes";
 import * as Collapsible from '@radix-ui/react-collapsible';
 
-type Props = { models: Model[] };
+type Props = { models: ModelsWithPH[] };
 
 export function PriceHistoryTable({ models }: Props) {
     
@@ -35,11 +35,14 @@ export function PriceHistoryTable({ models }: Props) {
                       </Table.Cell>
                     </Table.Row>
                     <Collapsible.Content asChild>
-                      <Table.Row id="Test Row">
-                        <Table.Cell>Collapse Test 1</Table.Cell>
-                        <Table.Cell>Collapse Test 1</Table.Cell>
-                        <Table.Cell>Collapse Test 1</Table.Cell>
-                      </Table.Row>
+                      <>
+                      {model.priceHistory.map((ph) => (
+                        <Table.Row key={ph.id}>
+                          <Table.Cell>{ph.price}</Table.Cell>
+                          <Table.Cell>{ph.createdAt.toISOString()}</Table.Cell>
+                        </Table.Row>
+                      ))}
+                      </>
                     </Collapsible.Content>
                   </>
                 </Collapsible.Root>

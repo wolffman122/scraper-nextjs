@@ -236,7 +236,11 @@ export async function fetchInvoiceById(id: string) {
 
 export async function fetchModels() {
   try {
-    const models = prisma.models.findMany();
+    const models = prisma.models.findMany({
+      include: {
+        priceHistory: true
+      }
+    });
 
     return models;
   }

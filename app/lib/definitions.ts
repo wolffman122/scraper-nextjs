@@ -125,6 +125,25 @@ export interface Model {
   brandsId: string | null;
 };
 
+export type ModelsWithPH = ({
+  priceHistory: {
+      id: string;
+      createdAt: Date;
+      price: number;
+      modelId: string;
+  }[];
+} & {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  modelNumber: string;
+  size: number;
+  cacheSize: number;
+  link: string;
+  scraperCode: string;
+  brandsId: string | null;
+});
+
 export interface WDAmazonData {
   modelNumber: string;
   size: string;
