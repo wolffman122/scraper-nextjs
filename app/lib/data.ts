@@ -2,10 +2,11 @@
 import { sql } from '@vercel/postgres';
 import {
   InvoiceForm,
+  PriceHistory,
   User,
 } from './definitions';
 import { formatCurrency } from './utils';
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient({
   log: [
@@ -235,16 +236,9 @@ export async function fetchInvoiceById(id: string) {
 
 export async function fetchModels() {
   try {
-    const brands = prisma.models.findMany({
-      orderBy: [
-        {
-          modelNumber: 'asc',
-          size: 'asc'
-        }
-      ]
-    })
+    const models = prisma.models.findMany();
 
-    return brands;
+    return models;
   }
   catch (err) {
     console.error('Datbase Error:', err);
