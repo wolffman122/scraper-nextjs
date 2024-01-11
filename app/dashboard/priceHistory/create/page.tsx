@@ -1,6 +1,6 @@
 "use client";
 
-import { fetchBrands, fetchModels } from "@/app/lib/data";
+import { fetchBrands } from "@/app/lib/data";
 import Breadcrumbs from "@/app/ui/invoices/breadcrumbs";
 import Form from "@/app/ui/priceHistory/create-form";
 

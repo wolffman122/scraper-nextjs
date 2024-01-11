@@ -2,20 +2,11 @@
 
 import { Model } from "@/app/lib/definitions";
 import { Table } from "@radix-ui/themes";
-import { useState } from "react";
 import * as Collapsible from '@radix-ui/react-collapsible';
-import { ArrowDownIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
 
 type Props = { models: Model[] };
 
 export function PriceHistoryTable({ models }: Props) {
-    const [open, setOpen] = useState(false);
-    console.log("Test", models);
-
-    const buttonClick = (e) => {
-      e.PreventDefault();
-      setOpen(e);
-    }
     
     return (    
       <div>
@@ -25,21 +16,21 @@ export function PriceHistoryTable({ models }: Props) {
               <Table.ColumnHeaderCell>Model Number</Table.ColumnHeaderCell>
               <Table.ColumnHeaderCell>Size</Table.ColumnHeaderCell>
               <Table.ColumnHeaderCell>cacheSize</Table.ColumnHeaderCell>
-              <Table.ColumnHeaderCell></Table.ColumnHeaderCell>
+              <Table.ColumnHeaderCell>History</Table.ColumnHeaderCell>
             </Table.Row>
           </Table.Header>
           <Table.Body>
             {
               models?.map((model) => (
-                <Collapsible.Root className="CollapsibleRoot" key={model.id} open={open} onOpenChange={setOpen} asChild>
-                  <div>
+                <Collapsible.Root className="CollapsibleRoot" key={model.id} asChild>
+                  <>
                     <Table.Row align={"center"}>
                       <Table.Cell>{model.modelNumber}</Table.Cell>
                       <Table.Cell>{model.size}</Table.Cell>
                       <Table.Cell>{model.cacheSize}</Table.Cell>
                       <Table.Cell>
                         <Collapsible.Trigger asChild>
-                          <button className="IconButton" onClick={buttonClick}>{!open ? <p>Open</p> : <p>Close</p>}</button>
+                          <button className="IconButton">Open</button>
                         </Collapsible.Trigger>
                       </Table.Cell>
                     </Table.Row>
@@ -50,7 +41,7 @@ export function PriceHistoryTable({ models }: Props) {
                         <Table.Cell>Collapse Test 1</Table.Cell>
                       </Table.Row>
                     </Collapsible.Content>
-                  </div>
+                  </>
                 </Collapsible.Root>
               ))
             }
