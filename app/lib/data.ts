@@ -156,7 +156,7 @@ export async function fetchFilteredModels(
     const data = await prisma.models.findMany({
       include: {
         brands: {}
-      },      
+      },
       orderBy: {
         size: "asc"
       }
@@ -253,8 +253,15 @@ export async function fetchModels() {
 export async function fetchModelsWithPH() {
   try {
     const models = await prisma.models.findMany({
+      orderBy: {
+        size: 'asc'
+      },
       include: {
-        priceHistory: true
+        priceHistory: {
+          orderBy: {
+            createdAt: 'asc'
+          }
+        }
       }
     });
 
