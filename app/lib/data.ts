@@ -250,6 +250,40 @@ export async function fetchModels() {
   }
 }
 
+export async function fetchModelsWithPH() {
+  try {
+    const models = await prisma.models.findMany({
+      include: {
+        priceHistory: true
+      }
+    });
+
+    const transformedModel = models.map((model) => {
+      const transformedPriceHistory = model.priceHistory.map((ph) => {
+        return {
+          id: ph.id,
+          price: ph.price,
+          createdAt: ph.createdAt
+        }
+      });
+
+      return {
+        id: model.id,
+        modelNumber: model.modelNumber,
+        size: model.size,
+        currentPrice: model.priceHistory[0] ? model.priceHistory[0].price : 0,
+        priceHistory: transformedPriceHistory
+      };
+    })
+
+    return transformedModel;
+  }
+  catch (err) {
+    console.error('Datbase Error:', err);
+    throw new Error('Failed to fetch all models');
+  }
+}
+
 export async function fetchModelById(id: string) {
   try {
     // const data = await sql<InvoiceForm>`

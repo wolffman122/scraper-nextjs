@@ -125,24 +125,24 @@ export interface Model {
   brandsId: string | null;
 };
 
-export type ModelsWithPH = ({
-  priceHistory: {
-      id: string;
-      createdAt: Date;
-      price: number;
-      modelId: string;
-  }[];
-} & {
+export type PriceHistory = {
   id: string;
   createdAt: Date;
-  updatedAt: Date;
+  price: number;
+  modelId: string;
+}
+
+export type ModelsWithPH = {
+  id: string;
   modelNumber: string;
   size: number;
-  cacheSize: number;
-  link: string;
-  scraperCode: string;
-  brandsId: string | null;
-});
+  currentPrice: number;
+  priceHistory: {
+      id: string,
+      price: number;
+      createdAt: Date;
+  }[];
+};
 
 export interface WDAmazonData {
   modelNumber: string;
