@@ -1,8 +1,9 @@
-import { priceScraper } from "@/app/lib/scrapers/amazonPriceScraper";
+import { fetchModelsWithPH } from "@/app/lib/data";
+import { PriceHistoryTable } from "@/app/ui/priceHistory/table";
 
 export default async function Page() {
-    priceScraper();
-
-    return <h1>Price History</h1>
+    //priceScraper();
+    const models = await fetchModelsWithPH();
+    return <PriceHistoryTable models={ models }/>
     
 }

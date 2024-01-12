@@ -113,6 +113,37 @@ export type ModelForm = {
   brandId: string
 }
 
+export interface Model {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  modelNumber: string;
+  size: number;
+  cacheSize: number;
+  link: string;
+  scraperCode: string;
+  brandsId: string | null;
+};
+
+export type PriceHistory = {
+  id: string;
+  createdAt: Date;
+  price: number;
+  modelId: string;
+}
+
+export type ModelsWithPH = {
+  id: string;
+  modelNumber: string;
+  size: number;
+  currentPrice: number;
+  priceHistory: {
+      id: string,
+      price: number;
+      createdAt: Date;
+  }[];
+};
+
 export interface WDAmazonData {
   modelNumber: string;
   size: string;

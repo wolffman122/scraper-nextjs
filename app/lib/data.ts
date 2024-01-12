@@ -2,10 +2,11 @@
 import { sql } from '@vercel/postgres';
 import {
   InvoiceForm,
+  PriceHistory,
   User,
 } from './definitions';
 import { formatCurrency } from './utils';
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient({
   log: [
@@ -155,7 +156,7 @@ export async function fetchFilteredModels(
     const data = await prisma.models.findMany({
       include: {
         brands: {}
-      },      
+      },
       orderBy: {
         size: "asc"
       }
@@ -235,16 +236,54 @@ export async function fetchInvoiceById(id: string) {
 
 export async function fetchModels() {
   try {
-    const brands = prisma.models.findMany({
-      orderBy: [
-        {
-          modelNumber: 'asc',
-          size: 'asc'
+    const models = prisma.models.findMany({
+      include: {
+        priceHistory: true
+      }
+    });
+
+    return models;
+  }
+  catch (err) {
+    console.error('Datbase Error:', err);
+    throw new Error('Failed to fetch all models');
+  }
+}
+
+export async function fetchModelsWithPH() {
+  try {
+    const models = await prisma.models.findMany({
+      orderBy: {
+        size: 'asc'
+      },
+      include: {
+        priceHistory: {
+          orderBy: {
+            createdAt: 'asc'
+          }
         }
-      ]
+      }
+    });
+
+    const transformedModel = models.map((model) => {
+      const transformedPriceHistory = model.priceHistory.map((ph) => {
+        return {
+          id: ph.id,
+          price: ph.price,
+          createdAt: ph.createdAt
+        }
+      });
+
+      return {
+        id: model.id,
+        modelNumber: model.modelNumber,
+        size: model.size,
+        currentPrice: model.priceHistory[0] ? model.priceHistory[0].price : 0,
+        priceHistory: transformedPriceHistory
+      };
     })
 
-    return brands;
+    return transformedModel;
   }
   catch (err) {
     console.error('Datbase Error:', err);
