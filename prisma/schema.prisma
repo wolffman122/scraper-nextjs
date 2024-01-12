@@ -14,30 +14,6 @@ model users {
   password String
 }
 
-model invoices {
-  id         String    @id @default(uuid())
-  amount     Int
-  status     String
-  date       DateTime  @default(now())
-  customerId String
-  customer   customers @relation(fields: [customerId], references: [id])
-
-  @@index([customerId], map: "invoices_customerId_fkey")
-}
-
-model customers {
-  id        String     @id @default(uuid())
-  name      String
-  email     String
-  image_url String
-  invoices  invoices[]
-}
-
-model revenue {
-  month   String @unique
-  revenue Int
-}
-
 model brands {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
